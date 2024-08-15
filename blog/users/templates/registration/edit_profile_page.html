@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile Page{% endblock title %}
+
+{% block content %}
+
+{% if user.id == userprofile.user.id %}
+
+<h1>Edit Profile Page</h1>
+
+<br>
+
+<div class="col-8">
+<form method="post" enctype="multipart/form-data">
+{% csrf_token %}
+    {{form.as_p}}
+    <button class="btn btn-secondary">Update</button>
+    &nbsp;
+    <a href="{% url "myblog:home" %}" class="btn btn-danger">Cancel</a>
+
+</form>
+</div>
+
+{% else %}
+
+<h3>You're not allowed here</h3>
+
+{% endif %}
+
+{% endblock content %}

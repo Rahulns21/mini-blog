@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Blog Categories{% endblock title %}
+
+{% block content %}
+
+    <h1>Blog Categories</h1>
+
+    <br>
+
+    {% for menu in category_menu_list %}
+
+        <h4>
+            <a href="{% url "myblog:category" menu.name|slugify %}">
+                {{menu.name|title}}
+            </a>
+        </h4>
+
+    {% endfor %}
+
+{% endblock content %}

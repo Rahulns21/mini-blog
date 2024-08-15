@@ -1,0 +1,80 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'myblog:home' %}">My Blog</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'myblog:home' %}">Home</a>
+        </li>
+
+        <!-- Category Menu -->
+        {% if category_menu %}
+          <li class="nav-item dropdown">
+            <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Categories
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              {% for menu in category_menu %}
+              <li><a class="dropdown-item" href="{% url 'myblog:category' menu.name|slugify %}">{{menu.name|title}}</a></li>
+              {% endfor %}
+            </ul>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a href="{% url 'myblog:category-list' %}" class="nav-link active">
+              Categories
+            </a>
+          </li>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'myblog:add-post' %}">Add Post</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'myblog:add-category' %}">Add Category</a>
+        </li>
+        {% endif %}
+      </ul>
+
+      <ul class="navbar-nav ms-auto">
+        {% if not user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'users:register' %}">Register</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'users:login' %}">Login</a>
+          </li>
+        {% else %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Profile
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              {% if user.userprofile.id %}
+                <li><a class="dropdown-item" href="{% url "users:show-profile" user.userprofile.id %}">Profile</a></li>
+                <li><a class="dropdown-item" href="{% url "users:edit-profile-page" user.userprofile.id %}">Edit Profile</a></li>
+              {% else %}
+                <li><a class="dropdown-item" href="{% url "users:create-profile-page" %}">Create Profile</a></li>
+              {% endif %}
+              <li><a class="dropdown-item" href="{% url 'users:edit-profile' %}">Settings</a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#" 
+              onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+          </li>
+        {% endif %}
+      </ul>
+
+      <form id="logout-form" action="{% url 'users:logout' %}" method="post" style="display: none;">
+        {% csrf_token %}
+      </form>
+      
+    </div>
+  </div>
+</nav>

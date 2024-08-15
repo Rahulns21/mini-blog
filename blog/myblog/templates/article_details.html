@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Article{% endblock title %}
+
+{% block content %}
+
+    <h1>{{post.title|title}}</h1> 
+
+    <small>By: {{post.author.first_name|title}} {{post.author.last_name|title}} - {{post.created_at}}</small>
+    
+    {% if post.author.id == user.id %}
+    <small><a href="{% url "myblog:edit-post" post.pk %}">Edit</a></small>
+    <small><a href="{% url "myblog:delete-post" post.pk %}">Delete</a></small>
+    {% endif %}
+
+    <br>
+
+    {% if post.category %}
+    <small>Category: {{post.category|title}}</small>
+    {% endif %}
+
+    <hr>
+
+    {% if post.header_image %}
+        <img src="{{post.header_image.url}}" alt="">
+    {% endif %}
+
+    <p>{{post.body|safe}}</p>
+
+    <br>
+
+    {% if user.is_authenticated %}
+
+        <form action="{% url "myblog:like-post" post.pk %}" 
+        method="POST">
+        {% csrf_token %}
+
+            {% if liked %}
+                <button type="submit" name="post_id"
+                value="{{post.id}}" class="btn btn-primary btn-sm">
+                    Unlike
+                </button>
+            {% else %}
+                <button type="submit" name="post_id"
+                value="{{post.id}}" class="btn btn-primary btn-sm">
+                    Like
+                </button>
+            {% endif %}
+
+            {% if total_likes <= 1 %}
+            - {{total_likes}} Like
+            {% else %}
+            - {{total_likes}} Likes
+            {% endif %}
+            
+        </form>
+
+    {% endif %}
+
+    <br>
+
+    <a href="{% url "myblog:home" %}" class="btn btn-secondary">Back</a>
+
+    <br><br>
+
+    <div class="card mb-3">
+        <div class="row g-0">
+          <div class="col-md-2">
+            {% if post.author.userprofile.profile_pic %}
+                <img src="{{post.author.userprofile.profile_pic.url}}" class="img-fluid rounded-start">
+            {% else %}
+                <img src="{% static "myblog/images/user.jpg" %}" alt="" class="img-fluid rounded-start">
+            {% endif %}
+          </div>
+          <div class="col-md-10">
+            <div class="card-body">
+                <h5 class="card-title">
+                    {{post.author.first_name}} 
+                    {{post.author.last_name}}
+                </h5>
+                <p class="small text-muted">
+
+                    <a href="{% url "users:show-profile" post.author.userprofile.id %}" style="text-decoration: none;">Profile</a>
+
+                    {% if post.author.userprofile.website_link %}
+                        | <a href="{{post.author.userprofile.website_link}}" style="text-decoration: none;" target="_blank">Website</a>
+                    {% endif %}
+
+                    {% if post.author.userprofile.facebook_link %}
+                        | <a href="{{post.author.userprofile.facebook_link}}" style="text-decoration: none;" target="_blank">Facebook</a>
+                    {% endif %}
+
+                    {% if post.author.userprofile.instagram_link %}
+                        | <a href="{{post.author.userprofile.instagram_link}}" style="text-decoration: none;" target="_blank">Instagram</a>
+                    {% endif %}
+
+                    {% if post.author.userprofile.twitter_link %}
+                        | <a href="{{post.author.userprofile.twitter_link}}" style="text-decoration: none;" target="_blank">Twitter</a>
+                    {% endif %}
+
+                </p>
+                <p class="card-text">
+                    {{post.author.userprofile.bio}}
+                </p>
+                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <br>
+
+    <h2>Comments...</h2>
+    
+    <br>
+    
+    {% if not post.comments.all %}
+    No Comments Yet
+    <br><br>
+    {% else %}
+    {% for comment in post.comments.all %}
+    <strong>{{comment.name}}</strong><br>
+    {{comment.body}} - {{comment.created_at}}
+    <br><br>
+    {% endfor %}
+    {% endif %}
+    
+    <a href="{% url "myblog:add-comment" post.pk %}" style="text-decoration: none;">Add comment</a>
+
+    <br><br>
+
+
+    <br><br>
+
+{% endblock content %}

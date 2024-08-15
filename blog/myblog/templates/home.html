@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock title %}
+
+{% block content %}
+
+<h1>Posts</h1>
+
+<br>
+
+{% for post in object_list %}
+
+<ul>
+    <li>
+        <a href="{% url "myblog:article-detail" post.pk %}" style="text-decoration: none;">{{post.title}}</a> 
+        {% if post.category %}
+            <a href="{% url "myblog:category" post.category|slugify %}" style="text-decoration: none;">- {{post.category|title}}</a>
+        {% endif %}
+        - {{post.author.first_name|title}} {{post.author.last_name|title}}
+        <!-- show these options only if the user is author -->
+        {% if user.id == post.author.id%}
+        <small><a href="{% url "myblog:edit-post" post.pk %}">Edit</a></small>
+        <small><a href="{% url "myblog:delete-post" post.pk %}">Delete</a></small>
+        {% endif %}
+        <br>
+        {{post.snippet}}
+    </li>
+</ul>
+
+{% endfor %}
+
+{% endblock content %}

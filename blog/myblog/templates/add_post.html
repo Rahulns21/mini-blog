@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Add Post{% endblock title %}
+
+{% block content %}
+
+<h1>Create Blog Post</h1>
+
+<br>
+
+<div class="col-8">
+<form method="post" enctype="multipart/form-data">
+{% csrf_token %}
+    {{form.media}}
+    {{form.as_p}}
+    <button class="btn btn-secondary">Post</button>
+    &nbsp;
+    <a href="{% url "myblog:home" %}" class="btn btn-danger">Cancel</a>
+
+</form>
+</div>
+
+{% endblock content %}

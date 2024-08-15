@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Update Post{% endblock title %}
+
+{% block content %}
+
+    {% if post.author.id == user.id %}
+
+        <h1>Edit Blog Post</h1>
+
+        <br>
+
+        <div class="col-8">
+        <form method="post">
+        {% csrf_token %}
+            {{form.media}}
+            {{form.as_p}}
+            <button class="btn btn-secondary">Update</button>
+            &nbsp;
+            <a href="{% url "myblog:home" %}" class="btn btn-danger">Cancel</a>
+            <br><br>
+
+        </form>
+        </div>
+
+    {% else %}
+
+        <h3 class="text-center">This action isn't allowed</h3>
+
+    {% endif %}
+
+{% endblock content %}

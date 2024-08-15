@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Categories{% endblock title %}
+
+{% block content %}
+
+<h1>{{cats|title}}</h1>
+
+<br>
+
+{% for post in category_posts %}
+
+<ul>
+    <li>
+        <a href="{% url "myblog:article-detail" post.pk %}" style="text-decoration: none;">{{post.title}}</a> 
+        {% if post.category %}
+            - {{post.category|title}} 
+        {% endif %}
+        - {{post.author.first_name|title}} {{post.author.last_name|title}}
+        <!-- show these options only if the user is author -->
+        {% if user.id == post.author.id%}
+        <small><a href="{% url "myblog:edit-post" post.pk %}">Edit</a></small>
+        <small><a href="{% url "myblog:delete-post" post.pk %}">Delete</a></small>
+        {% endif %}
+    </li>
+</ul>
+
+{% endfor %}
+
+{% endblock content %}

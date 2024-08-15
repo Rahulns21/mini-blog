@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Settings{% endblock title %}
+
+{% block content %}
+
+<h1>Settings</h1>
+
+<br>
+
+<div class="col-8">
+<form method="post" id="editProfileForm">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {{ user.userprofile.bio }}
+    <br><br>
+    <a href="{% url "users:change-password" %}" style="color: black;">Change Password?</a>
+    <br><br>
+    <button type="submit" id="updateButton" class="btn btn-secondary" disabled>Update</button>
+    &nbsp;
+    <a href="{% url "myblog:home" %}" class="btn btn-danger">Cancel</a>
+    <br>
+</form>
+
+</div>
+
+{% endblock content %}
+
+{% block extra_js %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('editProfileForm');
+            const updateButton = document.getElementById('updateButton');
+            const initialData = new FormData(form);
+
+            form.addEventListener('input', function () {
+                const currentData = new FormData(form);
+                let formChanged = false;
+
+                for (let [key, value] of currentData.entries()) {
+                    if (initialData.get(key) !== value) {
+                        formChanged = true;
+                        break;
+                    }
+                }
+
+                updateButton.disabled = !formChanged;
+            });
+        });
+    </script>
+
+{% endblock extra_js %}
